@@ -1290,6 +1290,16 @@ binary-extensions@^1.0.0:
   resolved "http://localhost:4873/binary-extensions/-/binary-extensions-1.12.0.tgz#c2d780f53d45bba8317a8902d4ceeaf3a6385b14"
   integrity sha512-DYWGk01lDcxeS/K9IHPGWfT8PsJmbXRtRd2Sx72Tnb8pcYZQFF1oSDb8hJtS1vhp212q1Rzi5dUf9+nq0o9UIg==
 
+"bluebird@>= 3.0.1":
+  version "3.5.2"
+  resolved "http://localhost:4873/bluebird/-/bluebird-3.5.2.tgz#1be0908e054a751754549c270489c1505d4ab15a"
+  integrity sha512-dhHTWMI7kMx5whMQntl7Vr9C6BvV10lFXDAasnqnrMYhXVCzzk6IO9Fo2L75jXHT07WrOngL1WDXOp+yYS91Yg==
+
+bluebird@~2.10.2:
+  version "2.10.2"
+  resolved "http://localhost:4873/bluebird/-/bluebird-2.10.2.tgz#024a5517295308857f14f91f1106fc3b555f446b"
+  integrity sha1-AkpVFylTCIV/FPkfEQb8O1VfRGs=
+
 body-parser@1.18.3, body-parser@^1.18.3:
   version "1.18.3"
   resolved "http://localhost:4873/body-parser/-/body-parser-1.18.3.tgz#5b292198ffdd553b3a0f20ded0592b956955c8b4"
@@ -1306,7 +1316,7 @@ body-parser@1.18.3, body-parser@^1.18.3:
     raw-body "2.3.3"
     type-is "~1.6.16"
 
-boom@7.x.x, boom@^7.1.0, boom@^7.1.1:
+boom@7.x.x, boom@^7.1.0, boom@^7.1.1, boom@^7.2.2:
   version "7.2.2"
   resolved "http://localhost:4873/boom/-/boom-7.2.2.tgz#ac92101451aa5cea901aed07d881dd32b4f08345"
   integrity sha512-IFUbOa8PS7xqmhIjpeStwT3d09hGkNYQ6aj2iELSTxcVs2u0aKn1NzhkdUQSzsRg1FVkj3uit3I6mXQCBixw+A==
@@ -4557,6 +4567,13 @@ ret@~0.1.10:
   resolved "http://localhost:4873/ret/-/ret-0.1.15.tgz#b8a4825d5bdb1fc3f6f53c2bc33f81388681c7bc"
   integrity sha512-TTlYpa+OL+vMMNG24xSlQGEJ3B/RzEfUlLct7b5G/ytav+wPrplCpVMFuwzXbkecJrb6IYo1iFb0S9v37754mg==
 
+rethinkdbdash@~2.3.0:
+  version "2.3.31"
+  resolved "http://localhost:4873/rethinkdbdash/-/rethinkdbdash-2.3.31.tgz#fe2f73d1fa6e6f5d96d8e881292013cf6dca914d"
+  integrity sha512-6nXrKFjdg2Ug0YpdmPWSvyD/2EisHnFNt4FWZ74dcXGK48ievSv+cNFTmVv+KjLi6I9CCf6w4CKZ6yCYTfMfdQ==
+  dependencies:
+    bluebird ">= 3.0.1"
+
 retry@0.12.0:
   version "0.12.0"
   resolved "http://localhost:4873/retry/-/retry-0.12.0.tgz#1b42a6266a21f07421d1b0b54b7dc167b01c013b"
@@ -5061,6 +5078,15 @@ test-exclude@^4.2.1:
     read-pkg-up "^1.0.1"
     require-main-filename "^1.0.1"
 
+thinky@^2.3.9:
+  version "2.3.9"
+  resolved "http://localhost:4873/thinky/-/thinky-2.3.9.tgz#16f80868a65c7fb490d316ddb342308f7e290cfa"
+  integrity sha512-4zp4wIQdwqyHP9CVoOa0/AV3GnKprHfOOVRj1KigtVcWi1DT7Eut52DVfX9nyI59399S+N6e3J5+4+y64ruf/g==
+  dependencies:
+    bluebird "~2.10.2"
+    rethinkdbdash "~2.3.0"
+    validator "~3.34.0"
+
 throat@^4.0.0:
   version "4.1.0"
   resolved "http://localhost:4873/throat/-/throat-4.1.0.tgz#89037cbc92c56ab18926e6ba4cbb200e15672a6a"
@@ -5243,6 +5269,11 @@ validator@^10.0.0:
   version "10.8.0"
   resolved "http://localhost:4873/validator/-/validator-10.8.0.tgz#8acb15a5c39411cbc8ef2be0c98c2514da4410a7"
   integrity sha512-mXqMxfCh5NLsVgYVKl9WvnHNDPCcbNppHSPPowu0VjtSsGWVY+z8hJF44edLR1nbLNzi3jYoYsIl8KZpioIk6g==
+
+validator@~3.34.0:
+  version "3.34.0"
+  resolved "http://localhost:4873/validator/-/validator-3.34.0.tgz#67cb418121f8fbaef597d97376d61b0db5937cc6"
+  integrity sha1-Z8tBgSH4+671l9lzdtYbDbWTfMY=
 
 vary@^1, vary@~1.1.2:
   version "1.1.2"

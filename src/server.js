@@ -5,11 +5,11 @@ import { typeDefs, resolvers } from "./graphql/schema";
 import HapiSwagger from "hapi-swagger";
 import Inert from "inert";
 import Vision from "vision";
-import apiRoute from "./api/route";
+import Routes from "./api/routes";
 
 
 const HOST = "0.0.0.0";
-const PORT = 8080;
+const PORT = 8081;
 
 
 async function StartServer() {
@@ -51,7 +51,7 @@ async function StartServer() {
                 }
             }
         },
-        apiRoute
+        Routes
     ];
     await app.register(plugins);
 
