@@ -1,0 +1,33 @@
+{
+  "name": "attempt1",
+  "version": "1.0.0",
+  "main": "index.js",
+  "license": "MIT",
+  "dependencies": {
+    "apollo-server": "^2.1.0",
+    "apollo-server-hapi": "^2.1.0",
+    "babel-cli": "^6.26.0",
+    "babel-polyfill": "^6.26.0",
+    "babel-preset-es2015": "^6.24.1",
+    "babel-preset-stage-2": "^6.24.1",
+    "babel-register": "^6.26.0",
+    "eslint-config-airbnb": "^17.1.0",
+    "graphql": "^14.0.2",
+    "graphql-tools": "^4.0.3",
+    "hapi": "^17.6.4",
+    "hapi-swagger": "^9.1.2",
+    "inert": "^5.1.1",
+    "jest": "^23.6.0",
+    "joi": "^14.0.4",
+    "node-fetch": "^2.2.0",
+    "vision": "^5.4.2"
+  },
+  "scripts": {
+    "test": "echo test",
+    "start": "node bin/dev",
+    "dev": "nodemon bin/dev",
+    "build": "mkdir -p dist && babel src -s -d dist",
+    "clean": "rm -rf dist",
+    "production": "npm run build && node bin/production"
+  }
+}
