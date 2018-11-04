@@ -3,6 +3,7 @@ import ArtistModel from './../model/artist';
 
 const Artist = {
     get: async () => {
+        console.log('made it here');
         ArtistModel.getJoin() //.filter({userId: userId})
             .run()
             .then((results) => {
@@ -10,6 +11,7 @@ const Artist = {
             });
     },
     create: async (args) => {
+        
         ArtistModel(args).saveAll().then((results) => {
             return results;
         });
