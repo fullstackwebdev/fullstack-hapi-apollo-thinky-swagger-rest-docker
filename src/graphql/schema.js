@@ -1,18 +1,26 @@
-import { PubSub, gql } from "apollo-server";
+import { PubSub, gql, ApolloError } from "apollo-server";
 import Artist from "./Artist";
 import Fan from "./Fan";
 
 const pubsub = new PubSub();
+
 export const typeDefs = gql`
     type Artist {
-        id: ID!,
+        id: String!,
         name: String!
-        fans: [Fan]
-        profile: String!
+        Fans: [Fan]
+        profile: String
+    }
+    type Artists {
+        allArtist: [Artist]
     }
     type Fan {
-        id: ID!,
+        id: String!,
         name: String!
+    }
+
+    type Fans {
+        allFans: [Fan]
     }
 
     type Error {
@@ -20,7 +28,26 @@ export const typeDefs = gql`
     }
 
     type ArtistCreationPayload {
-        artistId: String!
+        artistId: String
+        errors: [Error]
+    }
+
+    type ArtistDeletionPayload {
+        artistId: String
+        errors: [Error]
+    }
+
+    type ArtistPayload {
+        artist: Artist
+        artistId: String
+        message: String
+        errors: [Error]
+    }
+
+    type FanPayload {
+        fan: Fan
+        fanId: String
+        message: String
         errors: [Error]
     }
 
@@ -30,33 +57,76 @@ export const typeDefs = gql`
     }
 
     type Query {
-        artist(id: Int!): Artist!
+        artist(id: String!): Artist!
+        artists: [Artist]
         fan(id: Int!): Fan!
-        artists: [Artist!]
-        wtf: String!
+        fans: [Fan] 
     }
 
     type Mutation {
-        createArtist(name: String!): ArtistCreationPayload!
-        createFan( name: String!): FanCreationPayload!
+        createArtist(name: String!):  ArtistCreationPayload
         
+        deleteArtist(id: String!): ArtistDeletionPayload
+        updateArtist(
+            id: String!
+            name: String
+            ): ArtistPayload!
+
+        createFan( name: String!): FanPayload!
+        deleteFan( id: String!): FanPayload!
+        updateFan(
+            id: String!
+            name: String
+            ): FanPayload!
+
+        artistAddFan( 
+            artist: String! 
+            fan: String!
+            ) : ArtistCreationPayload
+        
+        artistRemoveFan(
+            artistId: String!
+            fanId: String!
+        ) : ArtistCreationPayload  
     }
 `;
 
 export const resolvers = {
     Query: {
         //post: (obj, args, context, info) => Post.getPost(args.id),
-        artist: (obj, args, context, info) => Artist.getArtist(args.id),
-        artists: (obj, args, context, info) => Artist.getArtist(args.id),
+        artist: (obj, args, context, info) => {
+            return Artist.get(args.id);
+        },
+        artists: (obj, args, context, info) => Artist.get(),
         fan: (obj, args, context, info) => Fan.get(id),
+        fans:  (obj, args, context, info) => {
+            return Fan.get()
+        },
     },
     Mutation: {
-        createArtist: (obj, args, context, info) => {
-            //const { name } = args;
-            return Artist.createArtist(args);
+        createArtist: async (obj, args, context, info) => {
+            return Artist.create(args)
+        },
+        updateArtist: (obj, args, context, info) => {
+            return Artist.update(args);
+        },
+        deleteArtist: async (obj, args, context, info) => {
+            return Artist.destroy(args.id)
         },
         createFan: (obj, args, context, info) => {
             return Fan.create(args);
+        },
+        updateFan: (obj, args, context, info) => {
+            return Fan.update(args);
+        },
+        deleteFan: async (obj, args, context, info) => {
+            return Fan.destroy(args.id)
+        },
+        artistAddFan: (obj, args, context, info) => {
+            return Artist.addFan(args);
+        },
+        artistRemoveFan: (obj, args, context, info) => {
+            return Artist.addFan(args);
         },
     }
 };

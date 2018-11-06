@@ -24,7 +24,7 @@ async function StartServer() {
         typeDefs,
         resolvers,
         // mocks should be set to false when ready to test against the real api
-        mocks: true
+        mocks: false
     });
 
     const app = new Hapi.server({

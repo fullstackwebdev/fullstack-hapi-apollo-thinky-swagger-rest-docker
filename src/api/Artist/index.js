@@ -2,6 +2,7 @@
 import Joi from "joi";
 import ArtistModel from '../../model/artist';
 import thinky from "thinky";
+import Boom from "boom";
 
 export const routes = [
     {
@@ -57,12 +58,11 @@ export const routes = [
             // plugins: {
             //     'hapi-io': 'api:add'
             // },
-            handler: (request, reply) => {
+            handler: async (request, reply) => {
                 //let userId = request.auth.credentials.accountId;
                 let artist = new ArtistModel(request.payload);
                 //artist.userId = userId;
-
-                artist.saveAll()
+                await artist.saveAll()
                     .then((result) => reply(result))
                     .catch((e) => reply(Boom.badRequest(e.message)));
             },
