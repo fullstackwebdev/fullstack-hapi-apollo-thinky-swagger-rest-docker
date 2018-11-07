@@ -5,7 +5,7 @@ const thinky = require("thinky")();
 const Fan = thinky.createModel("Fan", {
     id: type.string(),
     name: type.string(),
-    artistId: type.string()
+    //artistId: type.string()
 });
 
 // // auto increment ID

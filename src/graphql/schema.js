@@ -8,19 +8,15 @@ export const typeDefs = gql`
     type Artist {
         id: String!,
         name: String!
-        Fans: [Fan]
+        fans: [Fan]
         profile: String
     }
     type Artists {
         allArtist: [Artist]
     }
     type Fan {
-        id: String!,
+        id: String,
         name: String!
-    }
-
-    type Fans {
-        allFans: [Fan]
     }
 
     type Error {
@@ -80,14 +76,14 @@ export const typeDefs = gql`
             ): FanPayload!
 
         artistAddFan( 
-            artist: String! 
-            fan: String!
-            ) : ArtistCreationPayload
+            artistId: String! 
+            fanId: String!
+            ) : Artist
         
         artistRemoveFan(
             artistId: String!
             fanId: String!
-        ) : ArtistCreationPayload  
+        ) : Artist  
     }
 `;
 
@@ -126,7 +122,8 @@ export const resolvers = {
             return Artist.addFan(args);
         },
         artistRemoveFan: (obj, args, context, info) => {
-            return Artist.addFan(args);
+            console.log('sanity check');
+            return Artist.removeFan(args);
         },
     }
 };

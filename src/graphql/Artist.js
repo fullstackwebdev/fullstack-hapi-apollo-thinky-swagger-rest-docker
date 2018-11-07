@@ -1,5 +1,6 @@
 import ArtistModel from './../model/artist';
 import FanModel from './../model/fan';
+import { pull } from 'lodash';
 
 const Artist = {
     get: (id) => {
@@ -46,25 +47,27 @@ const Artist = {
     },
     addFan: async (args) => {
         try {
-            let artist = await ArtistModel.get(args.artistId).run();
+            let artist = await ArtistModel.get(args.artistId).getJoin().run();
             let fan = await FanModel.get(args.fanId).run();
-            //artist.fan.push(fan);
-            let results = await artist.save();
-            return { artist: results }
+            artist.fans.push(fan);
+            let results = await artist.saveAll();
+            return artist;
         } catch (error) {
-            return { errors: [{ message: 'could not add fan' + error.message }]}
+            return { errors: [{ message: error.message }]}
         }
     },
     removeFan: async (args) => {
         try {
-            let artist = await ArtistModel.get(args.artistId).run();
+            let artist = await ArtistModel.get(args.artistId).getJoin().run();
             let fan = await FanModel.get(args.fanId).run();
-            artist = artist.fan[fan.id].pop();
-            //artist.fan.push(fan.id);
-            let results = await artist.save();
-            return { artist: results }
+            let index = artist.fans.findIndex((i) => i.id === fan.id);
+            if (index > 0 ) {
+                artist.fans.splice(index, 1);
+            }
+            let results = await artist.saveAll();
+            return results;
         } catch (error) {
-            return { errors: [{ message: 'could not remove fan' + error.message }] }
+            return { errors: [{ message: error.message }] }
         }
     },
 };
@@ -72,6 +75,38 @@ const Artist = {
 export default Artist;
 
 /*
+query getallfans {
+ fans {
+  name
+  id
+ }
+}
+
+mutation createFan {
+  createFan(name:"fan2") {
+    fanId
+    errors {
+      message
+    }
+
+  }
+}
+
+# mutation updateFan {
+#   updateFan(id:"bd458d38-16d5-4285-9954-52b8307ec3af" name:"newName")
+#   {
+#     fan {
+#       name
+#       id
+#     }
+#   }
+# }
+
+# mutation deleteFan {
+#   deleteFan(id:"bd458d38-16d5-4285-9954-52b8307ec3af") {
+#     message
+#   }
+# }
 
 mutation createQ {
   createArtist(name: "testName") {
@@ -79,29 +114,79 @@ mutation createQ {
   }
 }
 
+mutation removeAFan {
+  artistRemoveFan(
+    artistId: "8b696f69-9128-4d86-a2b4-9dc6859c9705"
+    fanId:"ff1ede1c-c29b-48f7-aed6-b4807b95af91"
+  ) {
+    id
+    name
+    fans {
+      id
+      name
+    }
+  }
+}
+
+
+mutation addafan {
+  artistAddFan(artistId:"8b696f69-9128-4d86-a2b4-9dc6859c9705"
+  	fanId: "1e987101-0002-4716-b404-379f0ec00762") {
+    id
+    name
+    fans {
+      id
+      name
+    }
+  }
+}
+
+mutation addafan3 {
+  artistAddFan(artistId:"8b696f69-9128-4d86-a2b4-9dc6859c9705"
+  	fanId: "ff1ede1c-c29b-48f7-aed6-b4807b95af91") {
+    id
+    name
+    fans {
+      id
+      name
+    }
+  }
+}
+
+
+
+
 query getAllArtist {
 artists {
   name
   id
+  fans {
+    name
+    id
+  }
 }
 }
 
 query ArtistQuery {
-artist(id: "eb2ba04c-3341-4725-8311-03e0344a6fcb") {
+artist(id: "8b696f69-9128-4d86-a2b4-9dc6859c9705") {
   name
   id
+  fans {
+    name
+    id
+  }
 }
 }
 
 mutation deleteArtistMutation {
-  deleteArtist(id: "01de7b69-7b97-4536-a281-e8a4e5a38530")
+  deleteArtist(id: "b865031d-ee2a-401d-9a7f-ecbf51d6e148")
   {
       artistId
   }
 }
 
 mutation updateArtistMutation {
-  updateArtist( id: "01de7b69-7b97-4536-a281-e8a4e5a38530" name:"ASDF" )
+  updateArtist( id: "b865031d-ee2a-401d-9a7f-ecbf51d6e148" name:"ASDF" )
   {
    artist {
     name
