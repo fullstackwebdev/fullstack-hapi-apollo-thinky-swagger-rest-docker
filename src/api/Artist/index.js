@@ -1,22 +1,25 @@
 
 import Joi from "joi";
 import ArtistModel from '../../model/artist';
-import thinky from "thinky";
 import Boom from "boom";
 
 export const routes = [
+    /// CRUD
     {
         method: 'GET',
         path: '/artist',
+        handler: async (request, h) => {
+            //let userId = request.auth.credentials.accountId;
+            try {
+                const artists = await ArtistModel.getJoin() //userId: userId
+                    .run();
+                return artists; 
+            } catch ( error ) {
+                throw Boom.notFound(error.message);
+            }
+        },
         config: {
             //auth: 'token',
-            handler: (request, reply) => {
-                //let userId = request.auth.credentials.accountId;
-                ArtistModel.getJoin() //userId: userId
-                    .run()
-                    .then((results) => reply(results))
-                    .catch((e) => reply(Boom.notFound(e.message)));
-            },
             tags: ['api'],
             validate: {
                 query: Joi.object().keys({
@@ -29,19 +32,22 @@ export const routes = [
     {
         method: 'GET',
         path: '/artist/{id}',
+        handler: async (request, h) => {
+            //let userId = request.auth.credentials.accountId;
+            let id = request.params.id;
+            try { 
+                const artist = await ArtistModel.get(id).getJoin().run();
+                return artist;
+            } catch ( error ) {
+                throw Boom.notFound(error.message);
+            }
+        },
         config: {
             //auth: 'token',
             //plugins: {
             //    'hapi-io': 'api:findById'
             //},
-            handler: (request, reply) => {
-                //let userId = request.auth.credentials.accountId;
-                let id = request.params.id;
-
-                ArtistModel.get(id).getJoin().run()
-                    .then((artist) => reply(artist))
-                    .catch((e) => reply(Boom.notFound(e.message)));
-            },
+            
             tags: ['api'],
             validate: {
                 params: {
@@ -53,19 +59,28 @@ export const routes = [
     {
         method: 'POST',
         path: '/artist',
+        handler: async (request, h) => {
+            try {
+                let artist = new ArtistModel(request.payload);
+                let response = await artist.saveAll();
+                return response; // TODO 201 created
+
+            } catch ( error ) {
+                throw Boom.badRequest(error.message);
+            }
+            // //let userId = request.auth.credentials.accountId;
+            
+            // //artist.userId = userId;
+            // await artist.saveAll()
+            //     .then((result) => reply(result))
+            //     .catch((e) => reply();
+        },
         config: {
             //auth: 'token',
             // plugins: {
             //     'hapi-io': 'api:add'
             // },
-            handler: async (request, reply) => {
-                //let userId = request.auth.credentials.accountId;
-                let artist = new ArtistModel(request.payload);
-                //artist.userId = userId;
-                await artist.saveAll()
-                    .then((result) => reply(result))
-                    .catch((e) => reply(Boom.badRequest(e.message)));
-            },
+            
             tags: ['api'],
             validate: {
                 options: {
@@ -80,19 +95,21 @@ export const routes = [
     {
         method: 'PUT',
         path: '/artist/{id}',
+        handler: async (request, h) => {
+            try {
+                let artist = await ArtistModel.get(id).run();
+                let results = await artist.merge(request.payload).save();
+                return results;  
+            } catch ( error ) {
+                throw Boom.badRequest(error.message);
+            }
+        },
         config: {
             //auth: 'token',
             // plugins: {
             //     'hapi-io': 'api:update'
             // },
-            handler: (request, reply) => {
-                let id = request.params.id;
-
-                ArtistModel.get(id).run()
-                    .then((artist) => artist.merge(request.payload).save()
-                        .then((results) => reply(results)))
-                    .catch((e) => reply(Boom.badRequest(e.message)));
-            },
+            
             tags: ['api'],
             validate: {
                 options: {
@@ -110,17 +127,17 @@ export const routes = [
     {
         method: 'DELETE',
         path: '/artist/{id}',
-        config: {
-            //auth: 'token',
-            // plugins: {
-            //     'hapi-io': 'api:delete'
-            // },
-            handler: (request, reply) => {
+        handler: async (request, h) => {
+            try {
                 let id = request.params.id;
-                ArtistModel.get(id).run()
-                    .then((campaign) => campaign.delete().then((results) => reply(results)))
-                    .catch((e) => reply(Boom.badRequest(e.message)));
-            },
+                let artist = await ArtistModel.get(id).run();
+                let response = artist.delete();
+                return response;
+            } catch ( error ) {
+                throw Boom.badRequest(error.message);
+            }
+        },
+        config: {
             tags: ['api'],
             validate: {
                 params: {

@@ -1,21 +1,21 @@
 
 import Joi from "joi";
 import FanModel from '../../model/fan';
-import thinky from "thinky";
+import Boom from "boom";
 
 export const routes = [
     {
         method: 'GET',
         path: '/fan',
+        handler: async (request, h) => {
+            try {
+                const fans = await FanModel.getJoin().run();
+                return fans;
+            } catch (error) {
+                throw Boom.notFound(error.message);
+            }
+        },
         config: {
-            //auth: 'token',
-            handler: (request, reply) => {
-                //let userId = request.auth.credentials.accountId;
-                FanModel.getJoin() //userId: userId
-                    .run()
-                    .then((results) => reply(results))
-                    .catch((e) => reply(Boom.notFound(e.message)));
-            },
             tags: ['api'],
             validate: {
                 query: Joi.object().keys({
@@ -28,19 +28,16 @@ export const routes = [
     {
         method: 'GET',
         path: '/fan/{id}',
-        config: {
-            //auth: 'token',
-            //plugins: {
-            //    'hapi-io': 'api:findById'
-            //},
-            handler: (request, reply) => {
-                //let userId = request.auth.credentials.accountId;
+        handler: async (request, h) => {
+            try {
                 let id = request.params.id;
-
-                FanModel.get(id).getJoin().run()
-                    .then((fan) => reply(fan))
-                    .catch((e) => reply(Boom.notFound(e.message)));
-            },
+                const fan = await FanModel.get(id).getJoin().run();
+                return fan;
+            } catch (error) {
+                throw Boom.notFound(error.message);
+            }
+        },
+        config: {
             tags: ['api'],
             validate: {
                 params: {
@@ -52,20 +49,16 @@ export const routes = [
     {
         method: 'POST',
         path: '/fan',
-        config: {
-            //auth: 'token',
-            // plugins: {
-            //     'hapi-io': 'api:add'
-            // },
-            handler: (request, reply) => {
-                //let userId = request.auth.credentials.accountId;
+        handler: async (request, h) => {
+            try {
                 let fan = new FanModel(request.payload);
-                //fan.userId = userId;
-
-                fan.saveAll()
-                    .then((result) => reply(result))
-                    .catch((e) => reply(Boom.badRequest(e.message)));
-            },
+                let response = await fan.saveAll();
+                return response;
+            } catch (error) {
+                Boom.badRequest(error.message);
+            }
+        },
+        config: {
             tags: ['api'],
             validate: {
                 options: {
@@ -80,26 +73,24 @@ export const routes = [
     {
         method: 'PUT',
         path: '/fan/{id}',
-        config: {
-            //auth: 'token',
-            // plugins: {
-            //     'hapi-io': 'api:update'
-            // },
-            handler: (request, reply) => {
+        handler: async (request, h) => {
+            try {
                 let id = request.params.id;
-
-                FanModel.get(id).run()
-                    .then((fan) => fan.merge(request.payload).save()
-                        .then((results) => reply(results)))
-                    .catch((e) => reply(Boom.badRequest(e.message)));
-            },
+                let fan = await FanModel.get(id).getJoin().run();
+                let response = fan.merge(request.payload).save();
+                return response;
+            } catch (error) {
+                Boom.badRequest(error.message);
+            }
+        },
+        config: {
             tags: ['api'],
             validate: {
                 options: {
                     allowUnknown: true
                 },
                 params: {
-                    id: Joi.string()
+                    id: Joi.string().required()
                 },
                 payload: Joi.object().keys({
 
@@ -110,17 +101,18 @@ export const routes = [
     {
         method: 'DELETE',
         path: '/fan/{id}',
-        config: {
-            //auth: 'token',
-            // plugins: {
-            //     'hapi-io': 'api:delete'
-            // },
-            handler: (request, reply) => {
+        handler: async (request, h) => {
+            try {
                 let id = request.params.id;
-                FanModel.get(id).run()
-                    .then((campaign) => campaign.delete().then((results) => reply(results)))
-                    .catch((e) => reply(Boom.badRequest(e.message)));
-            },
+                let fan = await FanModel.get(id).run();
+                let response = fan.delete();
+                return response;
+
+            } catch (error) {
+                throw Boom.badRequest(error.message);
+            }
+        },
+        config: {
             tags: ['api'],
             validate: {
                 params: {
