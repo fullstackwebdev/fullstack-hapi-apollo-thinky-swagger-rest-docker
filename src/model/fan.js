@@ -1,11 +1,13 @@
-import { r, type } from "thinky";
-const thinky = require("thinky")();
+import { r, type } from 'thinky';
+import Artist from './artist';
+
+const thinky = require('thinky')();
 
 
-const Fan = thinky.createModel("Fan", {
-    id: type.string(),
-    name: type.string(),
-    //artistId: type.string()
+const Fan = thinky.createModel('Fan', {
+  id: type.string(),
+  name: type.string(),
+  // artistId: type.string()
 });
 
 // // auto increment ID
@@ -18,5 +20,4 @@ const Fan = thinky.createModel("Fan", {
 //     next();
 // })
 
-export default Fan ;
-
+export default Fan;

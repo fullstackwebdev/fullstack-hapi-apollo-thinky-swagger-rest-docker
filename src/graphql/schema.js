@@ -1,13 +1,13 @@
-import { PubSub, gql, ApolloError } from "apollo-server";
-import Artist from "./Artist";
-import Fan from "./Fan";
+import { PubSub, gql, ApolloError } from 'apollo-server';
+import Artist from './Artist';
+import Fan from './Fan';
 
 const pubsub = new PubSub();
 
 export const typeDefs = gql`
     type Artist {
-        id: String!,
-        name: String!
+        id: String
+        name: String
         fans: [Fan]
         profile: String
     }
@@ -15,8 +15,8 @@ export const typeDefs = gql`
         allArtist: [Artist]
     }
     type Fan {
-        id: String,
-        name: String!
+        id: String
+        name: String
     }
 
     type Error {
@@ -42,20 +42,20 @@ export const typeDefs = gql`
 
     type FanPayload {
         fan: Fan
-        fanId: String
+        id: String
         message: String
         errors: [Error]
     }
 
     type FanCreationPayload {
-        fanId: String!
+        id: String!
         errors: [Error]
     }
 
     type Query {
-        artist(id: String!): Artist!
+        artist(id: String!): Artist
         artists: [Artist]
-        fan(id: Int!): Fan!
+        fan(id: Int!): Fan
         fans: [Fan] 
     }
 
@@ -88,47 +88,29 @@ export const typeDefs = gql`
 `;
 
 export const resolvers = {
-    Query: {
-        //post: (obj, args, context, info) => Post.getPost(args.id),
-        artist: (obj, args, context, info) => {
-            return Artist.get(args.id);
-        },
-        artists: (obj, args, context, info) => Artist.get(),
-        fan: (obj, args, context, info) => Fan.get(id),
-        fans:  (obj, args, context, info) => {
-            return Fan.get()
-        },
+  Query: {
+    // post: (obj, args, context, info) => Post.getPost(args.id),
+    artist: (obj, args, context, info) => Artist.get(args.id),
+    artists: (obj, args, context, info) => Artist.get(),
+    fan: (obj, args, context, info) => Fan.get(id),
+    fans: (obj, args, context, info) => Fan.get(),
+  },
+  Mutation: {
+    createArtist: async (obj, args, context, info) => Artist.create(args),
+    updateArtist: (obj, args, context, info) => Artist.update(args),
+    deleteArtist: async (obj, args, context, info) => Artist.destroy(args.id),
+    createFan: (obj, args, context, info) => Fan.create(args),
+    updateFan: (obj, args, context, info) => Fan.update(args),
+    deleteFan: async (obj, args, context, info) => Fan.destroy(args.id),
+    artistAddFan: (obj, args, context, info) => Artist.addFan(args),
+    artistRemoveFan: (obj, args, context, info) => {
+      console.log('sanity check');
+      return Artist.removeFan(args);
     },
-    Mutation: {
-        createArtist: async (obj, args, context, info) => {
-            return Artist.create(args)
-        },
-        updateArtist: (obj, args, context, info) => {
-            return Artist.update(args);
-        },
-        deleteArtist: async (obj, args, context, info) => {
-            return Artist.destroy(args.id)
-        },
-        createFan: (obj, args, context, info) => {
-            return Fan.create(args);
-        },
-        updateFan: (obj, args, context, info) => {
-            return Fan.update(args);
-        },
-        deleteFan: async (obj, args, context, info) => {
-            return Fan.destroy(args.id)
-        },
-        artistAddFan: (obj, args, context, info) => {
-            return Artist.addFan(args);
-        },
-        artistRemoveFan: (obj, args, context, info) => {
-            console.log('sanity check');
-            return Artist.removeFan(args);
-        },
-    }
+  },
 };
 
 export default {
-    typeDefs,
-    resolvers
+  typeDefs,
+  resolvers,
 };

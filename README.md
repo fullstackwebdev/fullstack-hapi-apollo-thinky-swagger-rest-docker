@@ -21,6 +21,12 @@ npm start
 ```
 
 ### Running (with RethinkDB in Docker)
+* Requires docker and docker-compose 
+
+    https://docs.docker.com/install/
+
+    https://docs.docker.com/compose/install/
+
 
 ```
 make clean
@@ -37,6 +43,8 @@ make run
 
 
 
+Testing
 
+```
 
-
+```

@@ -1,75 +1,80 @@
-import ArtistModel from './../model/artist';
-import FanModel from './../model/fan';
 import { pull } from 'lodash';
+import ArtistModel from '../model/artist';
+import FanModel from '../model/fan';
 
 const Artist = {
-    get: (id) => {
-        if (id) {
-            return ArtistModel.get(id).getJoin().run();
-        } else {
-            return ArtistModel.getJoin().run();
-        }
-    },
-    create: async (args) => {
-        try {
-            let results = await ArtistModel(args).saveAll();
-            return ({
-                artistId: results.id
-            })
-        } catch (error) {
-            return ({
-                errors: [{ message: 'could not create' + error.message }]
-            });
-        }
-    },
-    update: async (args) => {
-        try {
-            let artist = await ArtistModel.get(args.id).run();
-            let results = artist.merge(args).save();
-            return { artist: results };
-        } catch (error) {
-            return { errors: [{ message: 'could not update' + error.message }] }
-        }
-    },
-    destroy: async (id) => {
-        try {
-            let artist = ArtistModel.get(id).run();
-            if (!artist) {
-                throw 'not found';
-            }
-            let results = artist.delete();
-            return {
-                artistId: id
-            }
-        } catch (error) {
-            return { errors: [{ message: 'could not delete ' + error.message }] }
-        }
-    },
-    addFan: async (args) => {
-        try {
-            let artist = await ArtistModel.get(args.artistId).getJoin().run();
-            let fan = await FanModel.get(args.fanId).run();
-            artist.fans.push(fan);
-            let results = await artist.saveAll();
-            return artist;
-        } catch (error) {
-            return { errors: [{ message: error.message }]}
-        }
-    },
-    removeFan: async (args) => {
-        try {
-            let artist = await ArtistModel.get(args.artistId).getJoin().run();
-            let fan = await FanModel.get(args.fanId).run();
-            let index = artist.fans.findIndex((i) => i.id === fan.id);
-            if (index > 0 ) {
-                artist.fans.splice(index, 1);
-            }
-            let results = await artist.saveAll();
-            return results;
-        } catch (error) {
-            return { errors: [{ message: error.message }] }
-        }
-    },
+  get: async (id) => {
+    try {
+      if (id) {
+        const results = await ArtistModel.get(id).getJoin().run();
+        return results;
+      }
+      const results = await ArtistModel.getJoin().run();
+      return results;
+    } catch (error) {
+      return null;
+    }
+  },
+  create: async (args) => {
+    try {
+      const results = await ArtistModel(args).saveAll();
+      return ({
+        artistId: results.id,
+      });
+    } catch (error) {
+      return ({
+        errors: [{ message: `could not create${error.message}` }],
+      });
+    }
+  },
+  update: async (args) => {
+    try {
+      const artist = await ArtistModel.get(args.id).run();
+      const results = artist.merge(args).save();
+      return { artist: results };
+    } catch (error) {
+      return { errors: [{ message: `could not update${error.message}` }] };
+    }
+  },
+  destroy: async (id) => {
+    try {
+      const artist = ArtistModel.get(id).run();
+      if (!artist) {
+        return null;
+      }
+      const results = artist.delete();
+      return {
+        artistId: id,
+      };
+    } catch (error) {
+      return { errors: [{ message: `could not delete ${error.message}` }] };
+    }
+  },
+  addFan: async (args) => {
+    try {
+      const artist = await ArtistModel.get(args.artistId).getJoin().run();
+      const fan = await FanModel.get(args.fanId).run();
+      artist.fans.push(fan);
+      const results = await artist.saveAll();
+      return artist;
+    } catch (error) {
+      return { errors: [{ message: error.message }] };
+    }
+  },
+  removeFan: async (args) => {
+    try {
+      const artist = await ArtistModel.get(args.artistId).getJoin().run();
+
+      if (artist.fans) {
+        delete artist.fans[artist.fans.findIndex(i => i.id === args.fanId)];
+      }
+
+      const results = await artist.saveAll();
+      return artist;
+    } catch (error) {
+      return { errors: [{ message: error.message }] };
+    }
+  },
 };
 
 export default Artist;
@@ -152,8 +157,6 @@ mutation addafan3 {
     }
   }
 }
-
-
 
 
 query getAllArtist {

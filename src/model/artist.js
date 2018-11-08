@@ -1,12 +1,13 @@
-import { r, type } from "thinky";
-const thinky = require("thinky")();
+import { r, type } from 'thinky';
 import Fan from './fan';
 
-const Artist = thinky.createModel("Artist", {
-    id: type.string(),
-    name: type.string(),
-    //profile: type.string(),
-    Fans: type.string(), // fanId
+const thinky = require('thinky')();
+
+const Artist = thinky.createModel('Artist', {
+  id: type.string(),
+  name: type.string(),
+  // profile: type.string(),
+  // fans: type.string(), // fanId
 });
 
 // // auto increment ID
@@ -19,11 +20,12 @@ const Artist = thinky.createModel("Artist", {
 //     next();
 // })
 
-//Model.hasMany(OtherModel, fieldName, leftKey, rightKey[, options]);
-//Fan.hasMany(Artist, 'fanId', 'id', 'fanId');
+// Model.hasMany(OtherModel, fieldName, leftKey, rightKey[, options]);
+// Fan.hasMany(Artist, 'fanId', 'id', 'fanId');
 
-//Fan.hasMany(Artist, "artists", "id", "fanId")
-Artist.hasMany(Fan, "fans", "id", "fanId");
+// Fan.hasMany(Artist, "artists", "id", "fanId")
+Artist.hasMany(Fan, 'fans', 'id', 'id');
 
-export default Artist ;
+Fan.hasAndBelongsToMany(Artist, 'fans', 'id', 'id');
 
+export default Artist;
